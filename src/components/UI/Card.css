@@ -1,0 +1,60 @@
+.card_body{
+    width: 80%;
+    border: 1px solid rgb(194, 194, 194);
+    box-shadow: 0 0 .5rem rgba(39, 38, 38, 0.521);
+    margin: 1rem auto;
+    padding: 1rem;
+    border-radius: .2rem;
+}
+.card_upper{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 80%;
+}
+.image{
+    width: 15%;
+    height: 120px;
+    overflow: hidden;
+    margin: 1rem;
+    border-radius: 4rem;
+}
+
+.image_foto{
+    width: 100%;
+    height: 100%;
+}
+
+.card_items{
+    width: 80%;
+    
+}
+
+.card_item{
+    padding: .1rem;
+    font-size: 1rem;
+}
+
+.card_buttons{
+    height: 20%;
+    margin: 1rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card_button{
+    text-align: center;
+    background-color: bisque;
+    color: black;
+    width: 150px;
+    margin: .5rem;
+    padding: .3rem;
+    border: none;
+}
+
+.card_button:hover{
+    background-color: black;
+    color: rgb(235, 217, 217);
+}
