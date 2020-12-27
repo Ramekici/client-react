@@ -6,18 +6,24 @@ export const userSlice = createSlice({
   initialState: {
     users:[],
     completed:false,
-    errors: null
+    errors: null,
+    updateItem: null
   },
   reducers: {
     setInitial:(state) => {
       state.completed =false;
       state.errors = null;
+      state.updateItem = null;
+    },
+    setUpdateItem:(state, action) => {
+      state.updateItem = state.users.find(item => item._id === action.payload)
     },
     setUserRedux: (state, action) => {
       state.users = action.payload;
     },
     setCompleted:(state) => {
       state.completed =true;
+      state.updateItem = null;
     },
     setDataFailed:(state, action) => {
       state.completed =false;
@@ -26,7 +32,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setInitial, setUserRedux, setCompleted, setDataFailed } = userSlice.actions;
+export const { setInitial, setUserRedux, setCompleted, setDataFailed, setUpdateItem} = userSlice.actions;
 
 export const getUsers = () =>  dispatch => {
    fetch('http://localhost:3002/users')

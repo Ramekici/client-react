@@ -1,11 +1,36 @@
-import React, {useEffect, useState } from 'react';
+import React, {useReducer, useCallback, useEffect } from 'react';
 import { useParams, useRouteMatch, useHistory } from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectUsers, addUsers, updateUsers} from '../features/users/usersSlice';
 import InputText from './UI/InputText';
 
-export default function Edit() {
+const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
+   
+const formReducer = (state, action) => {
+    if(action.type === FORM_INPUT_UPDATE){
+        const updatedValues = {
+            ...state.inputVal,
+            [action.input]: action.value
+        }
+        const updatedValidities = {
+            ...state.inputValidities,
+            [action.input]: action.isValid
+        }
+        let updatedFormIsValid = true;
+        for(const key in updatedValidities){
+            updatedFormIsValid = updatedFormIsValid && updatedValidities[key]
+        }
+        return {
+            inputVal: updatedValues,
+            inputValidities: updatedValidities,
+            formIsValid: updatedFormIsValid
+        }
+    } 
+    return state;
+}
 
+
+const CreateEdit = (props) => {
 
     let match = useRouteMatch("/create");
     let { id } = useParams();
@@ -14,45 +39,58 @@ export default function Edit() {
     const dispatch = useDispatch();
 
     const userRedux = useSelector(selectUsers);
-    const {users} = userRedux;
+    const {updateItem} = userRedux;
 
-    const [editIn, setEditIn] = useState({imageUrl:'', userName: '', 
-    email: '', name:'', lastName:'', birthDate:'', description:'' })
-    const { imageUrl, userName, 
-    email, name, lastName, birthDate, description} = editIn;
+    const [formState, dispatchFormState] = useReducer(formReducer, {
+        inputVal : {
+            IMGURL:updateItem ? updateItem.IMGURL : '',
+            USERNAME: updateItem ? updateItem.USERNAME : '', 
+            EMAIL: updateItem ? updateItem.EMAIL: '', 
+            FIRSTNAME:updateItem ? updateItem.FIRSTNAME: '', 
+            LASTNAME:updateItem ? updateItem.LASTNAME: '', 
+            BIRTHDATE: updateItem ? new Date(updateItem.BIRTHDATE).toISOString().split('T')[0]: '', 
+            DESCRIPTION:updateItem ? updateItem.DESCRIPTION: ''
+        },
+        inputValidities: {
+            IMGURL:false,
+            USERNAME: false, 
+            EMAIL: false, 
+            FIRSTNAME:false, 
+            LASTNAME:false, 
+            BIRTHDATE: false, 
+            DESCRIPTION:false  
+        },
+        formIsValid: false
+    })
 
-    useEffect(() => {
-        const data = users.find(item => item._id === id)
-        if (data) {
-            setEditIn({
-                imageUrl:data.IMGURL, 
-                userName: data.USERNAME, 
-                email: data.EMAIL,
-                name: data.FIRSTNAME,
-                lastName: data.LASTNAME,
-                birthDate: data.BIRTHDATE,
-                description: data.DESCRIPTION
+    const onChangeInputHandler = useCallback((inputIdentifier, inputValue, inputValidty) => {
+        dispatchFormState({
+            type:FORM_INPUT_UPDATE,
+            value: inputValue,
+            isValid: inputValidty,
+            input: inputIdentifier
+        }) 
+    },[dispatchFormState])
 
-             })
+    useEffect(()=> {
+        if(match) {
+            for(let keys in updateItem){
+                console.log(keys)
+                onChangeInputHandler(keys, '', false)
+            }
         }
-    }, [id,users])
-    
-
-    const onChangeHandler = (name) => (e) => {
-        setEditIn({ ...editIn, [name]: e.target.value })
-    }
+    },[match])
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
         const payload = {
-            IMGURL: imageUrl, 
-            USERNAME: userName,
-            EMAIL:email,
-            FIRSTNAME: name,
-            LASTNAME: lastName,
-            BIRTHDATE: birthDate,
-            DESCRIPTION: description
-
+            IMGURL: formState.inputVal.IMGURL, 
+            USERNAME: formState.inputVal.USERNAME,
+            EMAIL:formState.inputVal.EMAIL,
+            FIRSTNAME: formState.inputVal.FIRSTNAME,
+            LASTNAME: formState.inputVal.LASTNAME,
+            BIRTHDATE: new Date(formState.inputVal.BIRTHDATE).toISOString().split('T')[0],
+            DESCRIPTION: formState.inputVal.DESCRIPTION
         }
         if(match) {
             dispatch(addUsers(payload)).then(resp => {
@@ -67,73 +105,82 @@ export default function Edit() {
 
     return (
         <div className="container mt-5">
-            <div className="row text-center text-gray mb-3">
-                <div className="col-12">
+            <div className="row mb-5">
+                <h3 className="text-center mx-auto" style={{color:"chocolate"}}>
                     {id ? "Kullanıcı Güncelleme": "Kullanıcı Oluştur"}
-                </div>
+                </h3> 
             </div>
             <form onSubmit={onSubmitHandler}>
                 <div className="row no-gutters" 
                 style={{ justifyContent: "center", alignItems: "center", flexDirection:"column" }}>
                     <InputText
                         label="ImageUrl"
-                        id="imageUrl"
+                        id="IMGURL"
                         type="url"
-                        value={imageUrl}
-                        onChangeHandler={onChangeHandler('imageUrl')}
+                        required
+                        value={formState.inputVal.IMGURL}
+                        onChangeInput={onChangeInputHandler}
                     />
                     <InputText
                         label="UserName"
-                        id="userName"
+                        id="USERNAME"
                         type="text"
-                        value={userName}
-                        onChangeHandler={onChangeHandler('userName')}
+                        required
+                        value={formState.inputVal.USERNAME}
+                        onChangeInput={onChangeInputHandler}
                     />
                     <InputText
                         label="Email"
-                        id="email"
-                        value={email}
+                        id="EMAIL"
+                        required
+                        value={formState.inputVal.EMAIL}
                         type="email"
-                        onChangeHandler={onChangeHandler('email')}
+                        email
+                        onChangeInput={onChangeInputHandler}
                     />
                     <InputText
                         label="First Name"
-                        id="name"
-                        value={name}
+                        id="FIRSTNAME"
+                        required
+                        value={formState.inputVal.FIRSTNAME}
                         type="text"
-                        onChangeHandler={onChangeHandler('name')}
+                        onChangeInput={onChangeInputHandler}
                     />
                     <InputText
                         label="Last Name"
-                        id="lastName"
-                        value={lastName}
+                        id="LASTNAME"
+                        required
+                        value={formState.inputVal.LASTNAME}
                         type="text"
-                        onChangeHandler={onChangeHandler('lastName')}
+                        onChangeInput={onChangeInputHandler}
                     />
                     <InputText
                         label="Birth Date"
-                        id="birthDate"
-                        value={birthDate}
-                        type="text"
-                        onChangeHandler={onChangeHandler('birthDate')}
+                        id="BIRTHDATE"
+                        required
+                        value={formState.inputVal.BIRTHDATE}
+                        type="Date"
+                        onChangeInput={onChangeInputHandler}
                     />
                     <InputText
                         label="Description"
-                        id="description"
-                        value={description}
+                        id="DESCRIPTION"
+                        value={formState.inputVal.DESCRIPTION}
                         type="text"
-                        onChangeHandler={onChangeHandler('description')}
+                        onChangeInput={onChangeInputHandler}
                     />
                     <div className="col-lg-6 d-flex mt-3"  style={{justifyContent:"flex-end"}}>
-                        <button className="card_button" type="submit"> {id ? "Güncelle" :"Kaydet"}</button>
+                        <button 
+                            className="card_button" 
+                            type="submit"
+                            disabled={id ? false : !formState.formIsValid}
+                            > {id ? "Güncelle" :"Kaydet"}</button>
                     </div>
                 </div>   
             </form>
-
-
-
-
-
         </div>
     )
 }
+
+
+export default CreateEdit;

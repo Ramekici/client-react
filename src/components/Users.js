@@ -1,6 +1,6 @@
 import React, {useEffect, useCallback} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {getUsers, selectUsers, deleteUsers} from '../features/users/usersSlice';
+import {getUsers, selectUsers, deleteUsers, setUpdateItem} from '../features/users/usersSlice';
 import Card from './UI/Cards';
 
 const Users = () =>  {
@@ -21,11 +21,13 @@ const Users = () =>  {
         dispatch(deleteUsers(id))
     }
 
-    
-
+    const updateHandler = (id) =>{
+        dispatch(setUpdateItem(id))
+    }
 
     return (
         <div className="container mt-5">
+            <h3 className="text-center mb-5" style={{color:"blue"}}> Kullanıcılar Listesi </h3>
             {dataRedux.users.length > 0 ? 
             dataRedux.users.map(item => {
                 return <Card 
@@ -36,7 +38,10 @@ const Users = () =>  {
                         name = {item.FIRSTNAME}
                         surName = {item.LASTNAME}
                         imageUrl = {item.IMGURL}
-                        deleteFonk = {deleteHandler} 
+                        birthDate= {item.BIRTHDATE}
+                        description = {item.DESCRIPTION}
+                        deleteFonk = {deleteHandler}
+                        updateFonk = {updateHandler} 
                         
                 />
             }): 

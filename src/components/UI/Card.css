@@ -1,22 +1,26 @@
-.card_body{
-    width: 80%;
-    border: 1px solid rgb(194, 194, 194);
-    box-shadow: 0 0 .5rem rgba(39, 38, 38, 0.521);
-    margin: 1rem auto;
-    padding: 1rem;
-    border-radius: .2rem;
+.card_body {
+    width: 70%;
+    background-color: #f1faee;
+    border: 1px solid rgb(233, 232, 232);
+    box-shadow: 0 0 .3rem rgba(7, 7, 7, 0.233);
+    margin: .5rem auto;
+    padding: .5rem;
+    border-radius: .5rem;
+    box-sizing: border-box;
 }
+
 .card_upper{
     display: flex;
     align-items: center;
     justify-content: space-around;
-    height: 80%;
+    height: 85%;
 }
+
 .image{
-    width: 15%;
-    height: 120px;
+    width: 13%;
+    height: 100px;
     overflow: hidden;
-    margin: 1rem;
+    margin: .3rem;
     border-radius: 4rem;
 }
 
@@ -27,7 +31,7 @@
 
 .card_items{
     width: 80%;
-    
+    margin-left: 1rem;
 }
 
 .card_item{
@@ -36,25 +40,62 @@
 }
 
 .card_buttons{
-    height: 20%;
-    margin: 1rem;
-    padding: 1rem;
+    height: 15%;
+    margin:  0 1rem;
+    padding: .2rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .card_button{
-    text-align: center;
-    background-color: bisque;
-    color: black;
     width: 150px;
     margin: .5rem;
     padding: .3rem;
     border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    border-radius: .3rem;
+    transition: all .3s ease-in;
 }
 
-.card_button:hover{
+.card_button_display{
+    background-color: rgb(248, 196, 132);
+    color: black; 
+}
+
+.card_button_display:hover{
     background-color: black;
     color: rgb(235, 217, 217);
+}
+
+.card_button_delete{
+    background-color: rgb(252, 58, 58);
+    color: rgb(240, 233, 233);
+}
+
+.card_button_delete:hover{
+    background-color: rgb(209, 0, 0);
+    color: rgb(240, 233, 233);
+}
+
+.card_button_edit{
+    background-color: rgb(6, 44, 170);
+    text-decoration-line: none;
+    color: rgb(240, 233, 233);
+}
+
+.card_button_edit:hover{
+    background-color: rgb(2, 27, 109);
+    color: rgb(255, 255, 255);
+}
+.accordion__content {
+    background-color:inherit;
+    overflow: hidden;
+    transition: max-height 1s ease-in-out;    
+}
+
+.accordion__bos{
+    display: none;
+    transition: max-height 1s ease-in-out;
 }
